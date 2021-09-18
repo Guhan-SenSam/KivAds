@@ -24,14 +24,14 @@ There is a demo program inside the demo folder. Also included is a compiled apk 
 ## Things To Do
 These are the things that are still left to be implemented in KivAds.
 
-    - [x] Basic SDK connections
-    - [x] Interstitial Ads
-    - [ ] Banner Ads
-    - [ ] Reward Video Ads
-    - [ ] Native Ads
-    - [ ] Reward Interstitial Ads
-    - [ ] Host Docs on readthedocs
-    - [ ] Complete all Demos
+- [x] Basic SDK connections
+- [x] Interstitial Ads
+- [ ] Banner Ads
+- [ ] Reward Video Ads
+- [ ] Native Ads
+- [ ] Reward Interstitial Ads
+- [ ] Host Docs on readthedocs
+- [ ] Complete all Demos
 
 
 ## Installation
