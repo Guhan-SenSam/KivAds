@@ -1,13 +1,11 @@
+from kivads import BannerAd, InterstitialAd, KivAds, TestId
+from kivy.core.window import Window
 from kivy.lang import Builder
 from kivy.uix.screenmanager import Screen
 from kivy.utils import platform
-from kivy.core.window import Window
-
 from kivymd.app import MDApp
-from kivymd.uix.card import MDCard
 from kivymd.toast import toast
-
-from kivads import KivAds, TestId, InterstitialAd
+from kivymd.uix.card import MDCard
 
 Builder.load_string(
     """
@@ -32,6 +30,7 @@ Builder.load_string(
                     main_text:"Banner Ads"
                     secondary_text:"Rectangular ads that appear at the top or bottom of the device screen. Banner ads stay on screen while users are interacting with the app"
                     image:"assets/banner.png"
+                    on_release:app.banner.show()
                 CardElement:
                     main_text:"Rewarded Ads"
                     secondary_text:"Ads that reward users for watching short videos and interacting with playable ads and surveys"
@@ -102,11 +101,13 @@ class MainApp(MDApp):
     def build(self):
         self.ads = KivAds()
         self.interstitial = InterstitialAd(TestId.INTERSTITIAL)
+        self.banner = BannerAd(TestId.BANNER, int(Window.width))
         return MainScreen()
 
     def reload_ads(self, *args):
         toast("Reloading Ad")
         self.interstitial = InterstitialAd(TestId.INTERSTITIAL)
+        self.banner.hide()
 
 
 class CardElement(MDCard):

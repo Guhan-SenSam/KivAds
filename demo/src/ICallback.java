@@ -2,7 +2,6 @@ package org.org.kivads;
 
 import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback;
 import com.google.android.gms.ads.interstitial.InterstitialAd;
-import org.kivy.android.PythonActivity;
 
 
 public class ICallback extends InterstitialAdLoadCallback {
