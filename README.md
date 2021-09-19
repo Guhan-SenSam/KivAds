@@ -26,7 +26,7 @@ These are the things that are still left to be implemented in KivAds.
 
 - [x] Basic SDK connections
 - [x] Interstitial Ads
-- [ ] Banner Ads
+- [x] Banner Ads
 - [ ] Reward Video Ads
 - [ ] Native Ads
 - [ ] Reward Interstitial Ads
