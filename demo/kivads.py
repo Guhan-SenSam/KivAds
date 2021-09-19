@@ -1,9 +1,10 @@
+from kivy.logger import Logger
+from kivy.metrics import dp
 from kivy.properties import BooleanProperty
 from kivy.utils import platform
-from kivy.logger import Logger
 
 if platform == "android":
-    from android import mActivity, autoclass, cast
+    from android import autoclass, cast, mActivity
     from android.runnable import run_on_ui_thread
 
     context = mActivity.getApplicationContext()
@@ -20,10 +21,16 @@ if platform == "android":
     _InterstitialAd = autoclass(
         "com.google.android.gms.ads.interstitial.InterstitialAd"
     )
-
+    AdView = autoclass("com.google.android.gms.ads.AdView")
+    BListener = autoclass("org.org.kivads.BListener")
     InterstitialCallback = autoclass("org.org.kivads.ICallback")
     FullScreenContentCallbackI = autoclass("org.org.kivads.IFullScreen")
     Gravity = autoclass("android.view.Gravity")
+    LayoutParams = autoclass("android.view.ViewGroup$LayoutParams")
+    LinearLayout = autoclass("android.widget.LinearLayout")
+    AdSize = autoclass("com.google.android.gms.ads.AdSize")
+    View = autoclass("android.view.View")
+    activity = autoclass("org.kivy.android.PythonActivity")
 
 
 class BannerAd:
@@ -233,8 +240,15 @@ class KivAds:
     This class initializes the connection with admob servers and allows that app session to show ads.
     It is suggested to instance this class in the `on_build` method in your kivy app.
 
-    KivAds class takes one argument, `show_child`. Setting this argument to True will make
-    your app show only child ads for that app session. By default this value is set to False.
+    KivAds class takes two argument, `show_child` and `rating`.
+    Setting 'show_child' argument to True will make
+    your app show only child ads for that app session. By default this value is set to False. Setting it to
+    None will discole to AdMob that you have not specified if you want to show child ads or not. I recommend
+    to keep this at True or False(if u target above age 18) and not at None.
+
+    The `rating` argument takes a string to represnt the maximum rating of ads that your app will show during that
+    session. The available options are ['G','PG','T','MA']. By default the rating level is set to None. Meaning
+    your app will use th rating level set in your AdMob we console.
 
     Remember to properly read Google Admob policies on showing ads to people under the age of 18.
     KivAds assumes no responsiblity if you do not comply with Google Family policy and/or Admob Child Policies.
@@ -245,33 +259,59 @@ class KivAds:
     """ Read only property that will depict if KivAds has connected to Admob servers successfully
     """
 
-    def __init__(self, show_child=False, *args):
+    test_devices = []
+    """ A list of all the test devices that the user has added
+    """
+
+    def __init__(self, show_child=False, rating=None, *args):
         if platform == "android":
             Logger.info("KivAds: Running on Android")
-            self.initialize_connection(show_child)
+            self.initialize_connection(show_child, rating)
         else:
             Logger.warning("KivAds: Not on android, Ads will not be shown")
 
-    def initialize_connection(self, show_child):
+    def initialize_connection(
+        self,
+        show_child,
+        rating,
+    ):
         Logger.info("KivAds: Initializing Google SDK connection")
         self.initialized = True
+        # Set if to show child ads or not
         if show_child:
             requestConfiguration = (
-                RequestConfigurationBuilder()
-                .setTagForChildDirectedTreatment(
+                RequestConfigurationBuilder().setTagForChildDirectedTreatment(
                     RequestConfiguration.TAG_FOR_CHILD_DIRECTED_TREATMENT_TRUE
                 )
-                .build()
             )
         else:
             requestConfiguration = (
-                RequestConfigurationBuilder()
-                .setTagForChildDirectedTreatment(
+                RequestConfigurationBuilder().setTagForChildDirectedTreatment(
                     RequestConfiguration.TAG_FOR_CHILD_DIRECTED_TREATMENT_FALSE
                 )
-                .build()
             )
-        MobileAds.setRequestConfiguration(requestConfiguration)
+        # Set Content Rating levels
+        if rating == "G":
+            requestConfiguration.setMaxAdContentRating(
+                RequestConfiguration.MAX_AD_CONTENT_RATING_G
+            )
+        elif rating == "PG":
+            requestConfiguration.setMaxAdContentRating(
+                RequestConfiguration.MAX_AD_CONTENT_RATING_PG
+            )
+        elif rating == "T":
+            requestConfiguration.setMaxAdContentRating(
+                RequestConfiguration.MAX_AD_CONTENT_RATING_T
+            )
+        elif rating == "MA":
+            requestConfiguration.setMaxAdContentRating(
+                RequestConfiguration.MAX_AD_CONTENT_RATING_MA
+            )
+
+        # Add the test devices if there are any
+        for device in self.test_devices:
+            requestConfiguration.setTestDeviceIds(device)
+        MobileAds.setRequestConfiguration(requestConfiguration.build())
         MobileAds.initialize(context)
 
     def is_intialized(self):
@@ -279,6 +319,9 @@ class KivAds:
 
     """ Returns whether the KivAds has initialized the connection to AdMob Servers
     """
+
+    def add_test_device(self, id):
+        self.test_devices.append(id)
 
 
 class TestId:
@@ -290,4 +333,8 @@ class TestId:
 
     INTERSTITIAL = "ca-app-pub-3940256099942544/1033173712"
     """ Test id for Interstitial ads
+    """
+
+    BANNER = "ca-app-pub-3940256099942544/6300978111"
+    """ Test id for Banner Ads
     """
