@@ -240,7 +240,7 @@ class KivAds:
     This class initializes the connection with admob servers and allows that app session to show ads.
     It is suggested to instance this class in the `on_build` method in your kivy app.
 
-    KivAds class takes two argument, `show_child` and `rating`.
+    KivAds class takes three argument, `show_child`,`rating` and `test_id`.
     Setting 'show_child' argument to True will make
     your app show only child ads for that app session. By default this value is set to False. Setting it to
     None will discole to AdMob that you have not specified if you want to show child ads or not. I recommend
@@ -253,28 +253,23 @@ class KivAds:
     Remember to properly read Google Admob policies on showing ads to people under the age of 18.
     KivAds assumes no responsiblity if you do not comply with Google Family policy and/or Admob Child Policies.
     It is your job to ensure that the age appropriate ads are shown to your audience.
+
+    If you want to set your device as a testing device. Pass its ad id throught the argument `test_id`. This will
+    add it as a test device for the duration of the app session.
     """
 
     initialized = False
     """ Read only property that will depict if KivAds has connected to Admob servers successfully
     """
 
-    test_devices = []
-    """ A list of all the test devices that the user has added
-    """
-
-    def __init__(self, show_child=False, rating=None, *args):
+    def __init__(self, show_child=False, rating=None, test_id=None, *args):
         if platform == "android":
             Logger.info("KivAds: Running on Android")
             self.initialize_connection(show_child, rating)
         else:
             Logger.warning("KivAds: Not on android, Ads will not be shown")
 
-    def initialize_connection(
-        self,
-        show_child,
-        rating,
-    ):
+    def initialize_connection(self, show_child, rating, test_id):
         Logger.info("KivAds: Initializing Google SDK connection")
         self.initialized = True
         # Set if to show child ads or not
@@ -309,8 +304,8 @@ class KivAds:
             )
 
         # Add the test devices if there are any
-        for device in self.test_devices:
-            requestConfiguration.setTestDeviceIds(device)
+        if test_id:
+            requestConfiguration.setTestDeviceIds(test_id)
         MobileAds.setRequestConfiguration(requestConfiguration.build())
         MobileAds.initialize(context)
 
@@ -319,9 +314,6 @@ class KivAds:
 
     """ Returns whether the KivAds has initialized the connection to AdMob Servers
     """
-
-    def add_test_device(self, id):
-        self.test_devices.append(id)
 
 
 class TestId:
