@@ -1,4 +1,4 @@
-from kivads import BannerAd, InterstitialAd, KivAds, TestId
+from kivads import BannerAd, InterstitialAd, KivAds, RewardedAd, TestId
 from kivy.core.window import Window
 from kivy.lang import Builder
 from kivy.uix.screenmanager import Screen
@@ -35,6 +35,7 @@ Builder.load_string(
                     main_text:"Rewarded Ads"
                     secondary_text:"Ads that reward users for watching short videos and interacting with playable ads and surveys"
                     image:"assets/rewarded.png"
+                    on_release:app.reward.show()
                 CardElement:
                     main_text:"Native Ads"
                     secondary_text:"Customizable ads that match the look and feel of your app. You decide how and where they're placed."
@@ -102,12 +103,17 @@ class MainApp(MDApp):
         self.ads = KivAds()
         self.interstitial = InterstitialAd(TestId.INTERSTITIAL)
         self.banner = BannerAd(TestId.BANNER, int(Window.width))
+        self.reward = RewardedAd(TestId.REWARD, self.reward_callback)
         return MainScreen()
 
     def reload_ads(self, *args):
-        toast("Reloading Ad")
+        toast("Reloading Ads")
         self.interstitial = InterstitialAd(TestId.INTERSTITIAL)
         self.banner.hide()
+        self.reward = RewardedAd(TestId.REWARD, self.reward_callback)
+
+    def reward_callback(self, *args):
+        toast("You have Recieved a Reward!!")
 
 
 class CardElement(MDCard):

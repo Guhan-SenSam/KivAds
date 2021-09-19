@@ -4,12 +4,10 @@ from kivy.properties import BooleanProperty
 from kivy.utils import platform
 
 if platform == "android":
-    from android import autoclass, cast, mActivity
+    from android import PythonJavaClass, autoclass, java_method, mActivity
     from android.runnable import run_on_ui_thread
 
     context = mActivity.getApplicationContext()
-    AndroidBool = autoclass("java.lang.Boolean")
-    AndroidString = autoclass("java.lang.String")
     MobileAds = autoclass("com.google.android.gms.ads.MobileAds")
     AdRequest = autoclass("com.google.android.gms.ads.AdRequest")
     AdRequestBuilder = autoclass("com.google.android.gms.ads.AdRequest$Builder")
@@ -24,13 +22,113 @@ if platform == "android":
     AdView = autoclass("com.google.android.gms.ads.AdView")
     BListener = autoclass("org.org.kivads.BListener")
     InterstitialCallback = autoclass("org.org.kivads.ICallback")
-    FullScreenContentCallbackI = autoclass("org.org.kivads.IFullScreen")
+    FullScreenContentCallback = autoclass("org.org.kivads.FullScreen")
     Gravity = autoclass("android.view.Gravity")
     LayoutParams = autoclass("android.view.ViewGroup$LayoutParams")
     LinearLayout = autoclass("android.widget.LinearLayout")
     AdSize = autoclass("com.google.android.gms.ads.AdSize")
     View = autoclass("android.view.View")
     activity = autoclass("org.kivy.android.PythonActivity")
+    _RewardedAd = autoclass("com.google.android.gms.ads.rewarded.RewardedAd")
+    RewardCallback = autoclass("org.org.kivads.RCallback")
+
+
+class RewardEarnedListener(PythonJavaClass):
+    __javainterfaces__ = ["com/google/android/gms/ads/OnUserEarnedRewardListener"]
+
+    __javacontext__ = "app"
+
+    callback = None
+
+    rewarded = False
+
+    @java_method("(Lcom/google/android/gms/ads/rewarded/RewardItem;)V")
+    def onUserEarnedReward(self, reward):
+        self.reward = reward
+        # Run the `on_reward` callback that the user has provided
+        if self.callback:
+            self.callback()
+        self.rewarded = True
+
+
+class RewardedAd:
+    """This class represent a RewardedVideoAd Object. Instance this class to create
+    a RewardedVideo Ad. This class takes two arguments, `UnitID` and on_reward.
+    `UnitID`: The UnitID for this ad.
+    `on_reward`: A method to be called when an user completely watches the reward video ad.
+    """
+
+    callback = RewardCallback()
+
+    reward_listener = RewardEarnedListener()
+
+    full_screen_callback = FullScreenContentCallback()
+
+    def __init__(self, UnitID, on_reward=None):
+        if platform == "android":
+            Logger.info("KivAds: Loading Rewarded Ad")
+            self.on_reward = on_reward
+            self.callback.loaded = False
+            self.callback.mRewardedAd = None
+            self.load(UnitID)
+
+    @run_on_ui_thread
+    def load(self, UnitID):
+        """This function is used to load the reward ad. You don't need to call this
+        as when you instance the class it is auto ran. If ad is already loaded nothing
+        will happen.
+        """
+
+        if not self.callback.loaded:
+            builder = AdRequestBuilder().build()
+            _RewardedAd.load(context, UnitID, builder, self.callback)
+        else:
+            Logger.info("KivAds: Interstitial Ad already Loaded and Ready to Show")
+
+    @run_on_ui_thread
+    def show(self, immersive=False):
+        """Show your reward video ad. Takes one argument `immersive`. When set to
+        True your ad will be shown without the navigation drawer and the notification shade.
+        Function will only run if an ad is already loaded or else nothing will happen.
+        """
+
+        if self.callback.loaded:
+            if immersive:
+                self.callback.mRewardedAd.setImmersiveMode(True)
+            # If user has given a callback we set it here or else we leave it as None
+            if self.on_reward:
+                self.reward_listener.callback = self.on_reward
+            # Set the full screen content callback
+            self.full_screen_callback.dismissed = False
+            self.callback.mRewardedAd.setFullScreenContentCallback = (
+                self.full_screen_callback
+            )
+            self.callback.mRewardedAd.show(mActivity, self.reward_listener)
+            self.callback.loaded = False
+        else:
+            Logger.info("KivAds:The ad hasn't loaded yet. Not showing")
+
+    def is_loaded(self):
+        """Call this function to check if the reward video ad has been loaded"""
+        return self.callback.loaded
+
+    def is_dismissed(self):
+        """
+        Returns if the ad was dismissed by pressing the close button
+        """
+
+        if self.full_screen_callback.dismissed:
+            return True
+        else:
+            False
+
+    def get_reward_amount(self):
+        """Returns the reward amount"""
+        return self.reward_listener.reward.getAmount()
+
+    def get_reward_type(self):
+        """Returns the reward type"""
+        return self.reward_listener.reward.getType()
 
 
 class BannerAd:
@@ -65,10 +163,10 @@ class BannerAd:
         if platform == "android":
             Logger.info("KivAds: Loading Banner Ad")
             self.adlistener.loaded = False
-            self.load_banner(UnitID, size, bottom)
+            self.load(UnitID, size, bottom)
 
     @run_on_ui_thread
-    def load_banner(self, UnitID, size, bottom):
+    def load(self, UnitID, size, bottom):
         """
         Function to load the banner ad. There is no need to call this manually
         it will be called automattically when instancing the class
@@ -169,7 +267,7 @@ class InterstitialAd:
     change anything regarding this callback.
     """
 
-    full_screen_callback = FullScreenContentCallbackI()
+    full_screen_callback = FullScreenContentCallback()
 
     def __init__(self, UnitID):
         if platform == "android":
@@ -196,7 +294,7 @@ class InterstitialAd:
                 self.callback,
             )
         else:
-            Logger.info("KivAds: Interstitial Ad already Loaded and Ready to Show")
+            Logger.info("KivAds:Interstitial Ad already Loaded and Ready to Show")
 
     @run_on_ui_thread
     def show(self, immersive=False):
@@ -217,7 +315,7 @@ class InterstitialAd:
             self.callback.mInterstitialAd.show(mActivity)
             self.callback.loaded = False
         else:
-            Logger.warning("KivAds: The ad hasn't loaded yet. Not showing")
+            Logger.warning("KivAds:The ad hasn't loaded yet. Not showing")
 
     def is_loaded(self):
         """Returns if the ad is loaded"""
@@ -265,7 +363,7 @@ class KivAds:
     def __init__(self, show_child=False, rating=None, test_id=None, *args):
         if platform == "android":
             Logger.info("KivAds: Running on Android")
-            self.initialize_connection(show_child, rating)
+            self.initialize_connection(show_child, rating, test_id)
         else:
             Logger.warning("KivAds: Not on android, Ads will not be shown")
 
@@ -329,4 +427,8 @@ class TestId:
 
     BANNER = "ca-app-pub-3940256099942544/6300978111"
     """ Test id for Banner Ads
+    """
+
+    REWARD = "ca-app-pub-3940256099942544/5224354917"
+    """ Test id for Reward Video Ads
     """

@@ -27,8 +27,8 @@ These are the things that are still left to be implemented in KivAds.
 - [x] Basic SDK connections
 - [x] Interstitial Ads
 - [x] Banner Ads
-- [ ] Reward Video Ads
-- [ ] Native Ads
+- [x] Reward Video Ads
+- [ ] Native Ads(May or May not be added. Need to figure out how to attach android layouts to a kivy widget)
 - [ ] Reward Interstitial Ads
 - [ ] Host Docs on readthedocs
 - [ ] Complete all Demos
