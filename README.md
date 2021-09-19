@@ -29,7 +29,7 @@ These are the things that are still left to be implemented in KivAds.
 - [x] Banner Ads
 - [x] Reward Video Ads
 - [ ] Native Ads(May or May not be added. Need to figure out how to attach android layouts to a kivy widget)
-- [ ] Reward Interstitial Ads
+- [x] Reward Interstitial Ads
 - [ ] Host Docs on readthedocs
 - [ ] Complete all Demos
 
@@ -73,11 +73,9 @@ android.meta_data = com.google.android.gms.ads.APPLICATION_ID=<Your app ID>
 
 
 ## Test Ids
-You can use these ID's(Provided By Google) in order to test ads on your app without the need of an admob account. Just remember to change these to your actual AdMob id's or else you wont be able to earn any revenue.
+You can use this ID(Provided By Google) in order to test ads on your app without the need of an admob account. Just remember to change these to your actual AdMob id's or else you wont be able to earn any revenue. KivAds also provides Test Ids for all types of ads within your code.
 
 Test App Id: `ca-app-pub-3940256099942544~3347511713`
-
-Test InterstitialAd Id: `ca-app-pub-3940256099942544/1033173712`
 
 
 ## Important Links

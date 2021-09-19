@@ -1,4 +1,11 @@
-from kivads import BannerAd, InterstitialAd, KivAds, RewardedAd, TestId
+from kivads import (
+    BannerAd,
+    InterstitialAd,
+    KivAds,
+    RewardedAd,
+    RewardedInterstitial,
+    TestID,
+)
 from kivy.core.window import Window
 from kivy.lang import Builder
 from kivy.uix.screenmanager import Screen
@@ -37,13 +44,15 @@ Builder.load_string(
                     image:"assets/rewarded.png"
                     on_release:app.reward.show()
                 CardElement:
-                    main_text:"Native Ads"
-                    secondary_text:"Customizable ads that match the look and feel of your app. You decide how and where they're placed."
-                    image:"assets/native.png"
+                    main_text:"Rewarded Interstitial Ads"
+                    secondary_text:"A type of incentivized ad format that allows you offer rewards for ads that appear automatically during natural app transitions. Unlike rewarded ads, users aren't required to opt-in to view a rewarded interstitial."
+                    image:"assets/rewarded.png"
+                    on_release:app.reward_interstitial.show()
 
                 CardElement:
                     main_text:"Reload Ads"
                     on_release:app.reload_ads(app)
+                    image:"assets/reload.png"
 
 
 
@@ -101,16 +110,22 @@ class MainScreen(Screen):
 class MainApp(MDApp):
     def build(self):
         self.ads = KivAds()
-        self.interstitial = InterstitialAd(TestId.INTERSTITIAL)
-        self.banner = BannerAd(TestId.BANNER, int(Window.width))
-        self.reward = RewardedAd(TestId.REWARD, self.reward_callback)
+        self.interstitial = InterstitialAd(TestID.INTERSTITIAL)
+        self.banner = BannerAd(TestID.BANNER, int(Window.width))
+        self.reward = RewardedAd(TestID.REWARD, self.reward_callback)
+        self.reward_interstitial = RewardedInterstitial(
+            TestID.REWARD_INTERSTITIAL, self.reward_callback
+        )
         return MainScreen()
 
     def reload_ads(self, *args):
         toast("Reloading Ads")
-        self.interstitial = InterstitialAd(TestId.INTERSTITIAL)
+        self.interstitial = InterstitialAd(TestID.INTERSTITIAL)
         self.banner.hide()
-        self.reward = RewardedAd(TestId.REWARD, self.reward_callback)
+        self.reward = RewardedAd(TestID.REWARD, self.reward_callback)
+        self.reward_interstitial = RewardedInterstitial(
+            TestID.REWARD_INTERSTITIAL, self.reward_callback
+        )
 
     def reward_callback(self, *args):
         toast("You have Recieved a Reward!!")

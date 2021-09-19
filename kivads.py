@@ -31,6 +31,10 @@ if platform == "android":
     activity = autoclass("org.kivy.android.PythonActivity")
     _RewardedAd = autoclass("com.google.android.gms.ads.rewarded.RewardedAd")
     RewardCallback = autoclass("org.org.kivads.RCallback")
+    _RewardedInterstitialAd = autoclass(
+        "com.google.android.gms.ads.rewardedinterstitial.RewardedInterstitialAd"
+    )
+    RewardInterstitialCallback = autoclass("org.org.kivads.RICallback")
 
 
 class RewardEarnedListener(PythonJavaClass):
@@ -49,6 +53,81 @@ class RewardEarnedListener(PythonJavaClass):
         if self.callback:
             self.callback()
         self.rewarded = True
+
+
+class RewardedInterstitial:
+
+    callback = RewardInterstitialCallback()
+
+    reward_listener = RewardEarnedListener()
+
+    full_screen_callback = FullScreenContentCallback()
+
+    def __init__(self, UnitID, on_reward=None):
+        if platform == "android":
+            Logger.info("KivAds: Loading Interstitial Rewarded Ad")
+            self.on_reward = on_reward
+            self.callback.loaded = False
+            self.callback.mRewardedIinterstitialAd = None
+            self.load(UnitID)
+
+    @run_on_ui_thread
+    def load(self, UnitID):
+        """This function is used to load the interstitial reward ad. You don't need to call this
+        as when you instance the class it is auto ran. If ad is already loaded nothing
+        will happen.
+        """
+
+        if not self.callback.loaded:
+            builder = AdRequestBuilder().build()
+            _RewardedInterstitialAd.load(context, UnitID, builder, self.callback)
+        else:
+            Logger.info("KivAds: Interstitial Ad already Loaded and Ready to Show")
+
+    @run_on_ui_thread
+    def show(self, immersive=False):
+        """Show your rewarded interstitial ad. Takes one argument `immersive`. When set to
+        True your ad will be shown without the navigation drawer and the notification shade.
+        Function will only run if an ad is already loaded or else nothing will happen.
+        """
+
+        if self.callback.loaded:
+            if immersive:
+                self.callback.mRewardedInterstitialAd.setImmersiveMode(True)
+            # If user has given a callback we set it here or else we leave it as None
+            if self.on_reward:
+                self.reward_listener.callback = self.on_reward
+            # Set the full screen content callback
+            self.full_screen_callback.dismissed = False
+            self.callback.mRewardedInterstitialAd.setFullScreenContentCallback = (
+                self.full_screen_callback
+            )
+            self.callback.mRewardedInterstitialAd.show(mActivity, self.reward_listener)
+            self.callback.loaded = False
+        else:
+            Logger.info("KivAds:The ad hasn't loaded yet. Not showing")
+
+    def is_loaded(self):
+        """Call this function to check if the rewarded interstitial ad has been loaded"""
+        return self.callback.loaded
+
+    def is_dismissed(self):
+        """
+        Returns if the ad was dismissed by pressing the close button
+        """
+
+        if self.full_screen_callback.dismissed:
+            return True
+        else:
+            False
+
+    def get_reward_amount(self):
+        """Returns the reward amount"""
+        return self.reward_listener.reward.getAmount()
+
+    def get_reward_type(self):
+        """Returns the reward type"""
+        return self.reward_listener.reward.getType()
 
 
 class RewardedAd:
@@ -414,9 +493,9 @@ class KivAds:
     """
 
 
-class TestId:
+class TestID:
 
-    """This class contains various testids that can be used while you are tesing your app.
+    """This class contains various TestIDs that can be used while you are tesing your app.
     Remeber to change these when you do the final build for your app or you won't earn any money.
 
     """
@@ -431,4 +510,8 @@ class TestId:
 
     REWARD = "ca-app-pub-3940256099942544/5224354917"
     """ Test id for Reward Video Ads
+    """
+
+    REWARD_INTERSTITIAL = "ca-app-pub-3940256099942544/5354046379"
+    """ Test id for Reward Interstitial Ads
     """
