@@ -1,2 +1,3 @@
 .buildozer
 __pycache__
+docs/build

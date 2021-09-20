@@ -4,17 +4,14 @@ Monetize your apps with KivAds using Google AdMob api.
 
 KivAds uses the latest version of Google AdMob sdk(version 20.0.0). KivAds exposes most of the functions and operations available in the Admob sdk as easy to use python functions, allowing you to quickly integrate ads into your app. So far in testing KivAds works 100% reliabily on devices from android 6 all the way upto android 11.
 
-> Note: Currently the repo is work in progress and only few things have been implemented.
-
 ## Important Info
 
 * Because KivAds uses the latest SDk version, some of its functionality is implemented using java classes. Do not worry as you don't need to change any of these files, only copy them to your working directory as stated below.
 
-* KivAds is a work in progress so many things have not been implemented yet, but soon will be. The stuff that has been implemented will most likely not change but just make sure you check the changes between one commit and another.
-
 ## Documentation
 
-As of now KivAds has no official documentation. I do plan on adding it soon. In the meantime each function has docstrings under it that describe what the function does. If you still have any doubts you can contact me through [discord](https://discordapp.com/users/822127725535428639/).
+[readthdocs]()
+[discord](https://discordapp.com/users/822127725535428639/).
 
 
 ## Demo
@@ -24,18 +21,12 @@ There is a demo program inside the demo folder. Also included is a compiled apk 
 ## Things To Do
 These are the things that are still left to be implemented in KivAds.
 
-- [x] Basic SDK connections
-- [x] Interstitial Ads
-- [x] Banner Ads
-- [x] Reward Video Ads
 - [ ] Native Ads(May or May not be added. Need to figure out how to attach android layouts to a kivy widget)
-- [x] Reward Interstitial Ads
-- [ ] Host Docs on readthedocs
-- [ ] Complete all Demos
+- [ ] Make Individual Demo's
 
 
 ## Installation
-Currently cloning the repo is the only installation method.
+Currently cloning the repo is the only installation method. For more detailed info refer to the documentation.
 
 ## Requirements
 
@@ -79,6 +70,5 @@ Test App Id: `ca-app-pub-3940256099942544~3347511713`
 
 
 ## Important Links
-* https://github.com/MichaelStott/KivMob
 * https://developers.google.com/admob/android/quick-start
 * https://github.com/kivy/python-for-android
