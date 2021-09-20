@@ -1,4 +1,4 @@
-# KivAds(WIP)
+# KivAds
 
 Monetize your apps with KivAds using Google AdMob api.
 
@@ -10,7 +10,7 @@ KivAds uses the latest version of Google AdMob sdk(version 20.0.0). KivAds expos
 
 ## Documentation
 
-[readthdocs]()
+[readthdocs](https://kivads.readthedocs.io/en/latest/)
 [discord](https://discordapp.com/users/822127725535428639/).
 
 
@@ -22,7 +22,7 @@ There is a demo program inside the demo folder. Also included is a compiled apk 
 These are the things that are still left to be implemented in KivAds.
 
 - [ ] Native Ads(May or May not be added. Need to figure out how to attach android layouts to a kivy widget)
-- [ ] Make Individual Demo's
+- [ ] Make Individual Demos
 
 
 ## Installation
