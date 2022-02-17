@@ -11,7 +11,7 @@ KivAds uses the latest version of Google AdMob sdk(version 20.0.0). KivAds expos
 ## Documentation
 
 [readthdocs](https://kivads.readthedocs.io/en/latest/)
-[discord](https://discordapp.com/users/822127725535428639/).
+[discord](https://discord.com/channels/943755643741933618/943788682182291467)
 
 
 ## Demo
