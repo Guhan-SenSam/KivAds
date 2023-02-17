@@ -36,7 +36,7 @@ version = 0.1
 
 # (list) Application requirements
 # comma separated e.g. requirements = sqlite3,kivy
-requirements = python3,kivy,kivymd,pillow
+requirements = python3,kivy,kivymd==1.0.1,pillow
 
 # (str) Custom source folders for requirements
 # Sets custom source for any requirements with recipes
@@ -98,7 +98,7 @@ android.permissions = NTERNET, ACCESS_NETWORK_STATE
 #android.features = android.hardware.usb.host
 
 # (int) Target Android API, should be as high as possible.
-android.api = 30
+#android.api = 30
 
 # (int) Minimum API your APK / AAB will support.
 #android.minapi = 21
@@ -180,7 +180,7 @@ android.add_src = src
 #android.add_aars =
 
 # (list) Gradle dependencies to add
-android.gradle_dependencies = "com.google.android.gms:play-services-ads:20.3.0"
+android.gradle_dependencies = com.google.android.gms:play-services-ads:20.3.0
 
 # (bool) Enable AndroidX support. Enable when 'android.gradle_dependencies'
 # contains an 'androidx' package, or any package from Kotlin source.
@@ -295,7 +295,7 @@ p4a.branch = develop
 #p4a.commit = HEAD
 
 # (str) python-for-android git clone directory (if empty, it will be automatically cloned from github)
-p4a.source_dir = /home/guhan-sensam/Documents/python-for-android-feat-aab-support
+#p4a.source_dir = /home/guhan-sensam/Documents/python-for-android-feat-aab-support
 
 # (str) The directory in which python-for-android should look for your own build recipes (if any)
 #p4a.local_recipes =

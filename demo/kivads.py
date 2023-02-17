@@ -221,7 +221,7 @@ class BannerAd:
             layout.setLayoutParams(layoutParams)
             if bottom:
                 layout.setGravity(Gravity.BOTTOM)
-            activity.addContentView(layout, layoutParams)
+            activity.mActivity.addContentView(layout, layoutParams)
             builder = AdRequestBuilder().build()
             self.adview.loadAd(builder)
         else:

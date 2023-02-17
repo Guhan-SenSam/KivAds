@@ -19,7 +19,7 @@ Builder.load_string(
 <MainScreen>:
     GridLayout:
         cols:1
-        MDToolbar:
+        MDTopAppBar:
             title:"KivAds"
         ScrollView:
             GridLayout:
