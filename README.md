@@ -2,7 +2,7 @@
 
 Monetize your apps with KivAds using Google AdMob api.
 
-KivAds uses the latest version of Google AdMob sdk(version 20.0.0). KivAds exposes most of the functions and operations available in the Admob sdk as easy to use python functions, allowing you to quickly integrate ads into your app. So far in testing KivAds works 100% reliabily on devices from android 6 all the way upto android 11.
+KivAds uses the latest version of Google AdMob sdk(version 22.5.0). KivAds exposes most of the functions and operations available in the Admob sdk as easy to use python functions, allowing you to quickly integrate ads into your app. So far in testing KivAds works 100% reliabily on devices from android 6 all the way upto android 13.
 
 ## Important Info
 
@@ -40,7 +40,7 @@ KivAds requires some changes to your buildozer.spec file and also python-for-and
 to `distributionUrl=https\://services.gradle.org/distributions/gradle-6.5-all.zip
 `
 
-    I am still testing other gradle versions to see if they will work with KivAds.
+    I am still testing other gradle versions to see if they will work with KivAds. This change might be unnecessary for recent versions of Python for Android.
 
 3. Now change the following fields in your `buildozer.spec` file.
 `android.permissions`,
@@ -50,8 +50,8 @@ to `distributionUrl=https\://services.gradle.org/distributions/gradle-6.5-all.zi
     to this
     ```
     android.permissions = INTERNET, ACCESS_NETWORK_STATE
-    android.api = 30 # Anything 28 and above is okay
-    android.gradle_dependencies = 'com.google.android.gms:play-services-ads:20.3.0'
+    android.api = 34 # Anything 28 and above is okay
+    android.gradle_dependencies = 'com.google.android.gms:play-services-ads:22.5.0'
     ```
 
 4. Now you need to add your admob app-id to the manifest file in order for ads to work in your app. Change the `android.meta_data`
